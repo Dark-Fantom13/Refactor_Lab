@@ -102,8 +102,8 @@ namespace RLCExamples01
 
                 Item each = (Item)items.Current;
                 
-                int bonus = GetBonus(each);
-                double discount = GetDiscount(each);
+                int bonus = each.GetBonus();
+                double discount = each.GetDiscount();
                 
                 // учитываем скидку 
                 thisAmount = GetSum(each) - discount;

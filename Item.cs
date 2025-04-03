@@ -33,5 +33,13 @@ namespace RLCExamples01
         {
             return _Goods;
         }
+        public int GetBonus()
+        {
+            return _Goods.GetBonus(this.getQuantity(), this.getPrice());
+        }
+        public double GetDiscount()
+        {
+            return _Goods.GetDiscount(this.getQuantity(), this.getPrice());
+        }
     }
 }

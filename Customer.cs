@@ -5,7 +5,7 @@ using System.Text;
 
 namespace RLCExamples01
 {
-    // Класс, представляющий клиента магазина. 
+    // Класс, представляющий клиента магазина. ddd
     public class Customer
     {
         private int bonus;

@@ -32,5 +32,58 @@ namespace RLCExamples01
         {
             return _title;
         }
+        private double GetSum(Item each)
+        {
+            return each.getQuantity() * each.getPrice();
+        }
+        //public int GetBonus(Item each)
+        //{
+        //    int bonus = 0;
+        //    switch (each.getGoods().getPriceCode())
+        //    {
+        //        case Goods.REGULAR:
+        //            bonus = (int)(GetSum(each) * 0.05);
+        //            break;
+        //        case Goods.SALE:
+        //            bonus = (int)(GetSum(each) * 0.01);
+        //            break;
+        //    }
+        //    return bonus;
+        //}
+        public int GetBonus(int quantity, double price)
+        {
+            int bonus = 0;
+            switch (_priceCode)
+            {
+                case Goods.REGULAR:
+                    bonus = (int)(quantity* price * 0.05);
+                    break;
+                case Goods.SALE:
+                    bonus = (int)(quantity * price * 0.01);
+                    break;
+            }
+            return bonus;
+        }    
+        public double GetDiscount(int quantity, double price)
+        {
+            double discount = 0;
+            switch (_priceCode)
+            {
+                case Goods.REGULAR:
+
+                    if (quantity > 2)
+                        discount = quantity * price * 0.03; // 3% 
+                    break;
+                case Goods.SPECIAL_OFFER:
+                    if (quantity > 10)
+                        discount = quantity * price * 0.005; // 0.5% 
+                    break;
+                case Goods.SALE:
+                    if (quantity > 3)
+                        discount = quantity * price * 0.01; // 0.1% 
+                    break;
+            }
+            return discount;
+        }
     }
 }
