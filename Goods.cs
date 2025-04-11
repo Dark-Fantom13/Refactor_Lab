@@ -12,14 +12,14 @@ namespace RLCExamples01
         public const int SALE = 1;
         public const int SPECIAL_OFFER = 2;
 
-        private String _title;
-        private int _priceCode;
+        protected String _title;
+        protected int _priceCode;
 
-        public Goods(String title, int priceCode)
-        {
-            _title = title;
-            _priceCode = priceCode;
-        }
+        //public Goods(String title)
+        //{
+        //    _title = title;
+        //    //_priceCode = priceCode;
+        //}
         public int getPriceCode()
         {
             return _priceCode;
@@ -36,35 +36,21 @@ namespace RLCExamples01
         {
             return each.getQuantity() * each.getPrice();
         }
-        //public int GetBonus(Item each)
-        //{
-        //    int bonus = 0;
-        //    switch (each.getGoods().getPriceCode())
-        //    {
-        //        case Goods.REGULAR:
-        //            bonus = (int)(GetSum(each) * 0.05);
-        //            break;
-        //        case Goods.SALE:
-        //            bonus = (int)(GetSum(each) * 0.01);
-        //            break;
-        //    }
-        //    return bonus;
-        //}
-        public int GetBonus(int quantity, double price)
+        public virtual int GetBonus(int quantity, double price)
         {
             int bonus = 0;
             switch (_priceCode)
             {
                 case Goods.REGULAR:
-                    bonus = (int)(quantity* price * 0.05);
+                    bonus = (int)(quantity * price * 0.05);
                     break;
                 case Goods.SALE:
                     bonus = (int)(quantity * price * 0.01);
                     break;
             }
             return bonus;
-        }    
-        public double GetDiscount(int quantity, double price)
+        }
+        public virtual double GetDiscount(int quantity, double price)
         {
             double discount = 0;
             switch (_priceCode)
@@ -84,6 +70,64 @@ namespace RLCExamples01
                     break;
             }
             return discount;
+        }
+        public class SaleGoods : Goods
+        {
+            public SaleGoods(string title)
+            {
+                _title = title;
+            }
+            public override int GetBonus(int quantity, double price)
+            {
+                int bonus = (int)(quantity * price * 0.01);
+                return bonus;
+            }
+            public override double GetDiscount(int quantity, double price)
+            {
+                double discount = 0;
+                if (quantity > 3)
+                    discount = quantity * price * 0.01; // 0.1% 
+                return discount;
+            }
+        }
+        public class RegularGoods : Goods
+        {
+            public RegularGoods(string title)
+            {
+                _title = title;
+            }
+            public override int GetBonus(int quantity, double price)
+            {
+                int bonus = (int)(quantity * price * 0.05);
+                return bonus;
+            }
+            public override double GetDiscount(int quantity, double price)
+            {
+                double discount = 0;
+                if (quantity > 2)
+                    discount = quantity * price * 0.03; // 3% 
+                return discount;
+            }
+
+        }
+        public class SpecialOrderGoods : Goods
+        {
+            public SpecialOrderGoods(string title)
+            {
+                _title = title;
+            }
+            public override int GetBonus(int quantity, double price)
+            {
+                return 0;
+            }
+            public override double GetDiscount(int quantity, double price)
+            {
+                double discount = 0;
+                if (quantity > 2)
+                    discount = quantity * price * 0.03; // 3% 
+                return discount;
+            }
+            
         }
     }
 }
