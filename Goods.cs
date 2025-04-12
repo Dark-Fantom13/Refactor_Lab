@@ -8,26 +8,22 @@ namespace RLCExamples01
     // Класс, который представляет данные о товаре 
     public class Goods
     {
-        public const int REGULAR = 0;
-        public const int SALE = 1;
-        public const int SPECIAL_OFFER = 2;
-
         protected String _title;
-        protected int _priceCode;
+        //protected int _priceCode;
 
         //public Goods(String title)
         //{
         //    _title = title;
         //    //_priceCode = priceCode;
         //}
-        public int getPriceCode()
-        {
-            return _priceCode;
-        }
-        public void setPriceCode(int arg)
-        {
-            _priceCode = arg;
-        }
+        //public int getPriceCode()
+        //{
+        //    return _priceCode;
+        //}
+        //public void setPriceCode(int arg)
+        //{
+        //    _priceCode = arg;
+        //}
         public String getTitle()
         {
             return _title;
@@ -38,38 +34,11 @@ namespace RLCExamples01
         }
         public virtual int GetBonus(int quantity, double price)
         {
-            int bonus = 0;
-            switch (_priceCode)
-            {
-                case Goods.REGULAR:
-                    bonus = (int)(quantity * price * 0.05);
-                    break;
-                case Goods.SALE:
-                    bonus = (int)(quantity * price * 0.01);
-                    break;
-            }
-            return bonus;
+            return 0;
         }
         public virtual double GetDiscount(int quantity, double price)
         {
-            double discount = 0;
-            switch (_priceCode)
-            {
-                case Goods.REGULAR:
-
-                    if (quantity > 2)
-                        discount = quantity * price * 0.03; // 3% 
-                    break;
-                case Goods.SPECIAL_OFFER:
-                    if (quantity > 10)
-                        discount = quantity * price * 0.005; // 0.5% 
-                    break;
-                case Goods.SALE:
-                    if (quantity > 3)
-                        discount = quantity * price * 0.01; // 0.1% 
-                    break;
-            }
-            return discount;
+            return 0;
         }
         public class SaleGoods : Goods
         {
@@ -123,8 +92,8 @@ namespace RLCExamples01
             public override double GetDiscount(int quantity, double price)
             {
                 double discount = 0;
-                if (quantity > 2)
-                    discount = quantity * price * 0.03; // 3% 
+                if (quantity > 10)
+                    discount = quantity * price * 0.005; // 0.5% 
                 return discount;
             }
          //ttt   

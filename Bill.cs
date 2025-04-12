@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using static RLCExamples01.Goods;
 
 namespace RLCExamples01
 {
@@ -49,46 +50,10 @@ namespace RLCExamples01
             return result;
         }
         
-        private int GetBonus(Item each)
-        {
-            int bonus = 0;
-            switch (each.getGoods().getPriceCode())
-            {
-                case Goods.REGULAR:
-                    bonus = (int)(GetSum(each) * 0.05);
-                    break;
-                case Goods.SALE:
-                    bonus = (int)(GetSum(each) * 0.01);
-                    break;
-            }
-            return bonus;
-        }
         private int GetUsedBonus(double thisAmount)
         {
             int usedBonus = _customer.useBonus((int)(thisAmount));
             return usedBonus;
-        }
-        private double GetDiscount(Item each)
-        {
-            double discount=0;
-            switch (each.getGoods().getPriceCode())
-            {
-                case Goods.REGULAR:
-
-                    if (each.getQuantity() > 2)
-                        discount = (GetSum(each)) * 0.03; // 3% 
-                    break;
-                case Goods.SPECIAL_OFFER:
-                    if (each.getQuantity() > 10)
-                        discount = (GetSum(each)) * 0.005; // 0.5% 
-                    break;
-                case Goods.SALE:
-                    if (each.getQuantity() > 3)
-                        discount = (GetSum(each)) * 0.01; // 0.1% 
-                    break;
-            }
-            
-            return discount;
         }
         public String statement()
         {
@@ -109,12 +74,12 @@ namespace RLCExamples01
                 thisAmount = GetSum(each) - discount;
                 int usedBonus = 0;
                 // используем бонусы 
-                if ((each.getGoods().getPriceCode() ==
-                     Goods.REGULAR) && each.getQuantity() > 5)
+                if ((each.getGoods().GetType() ==
+                     typeof(RegularGoods)) && each.getQuantity() > 5)
                     usedBonus = GetUsedBonus(thisAmount);
 
-                if ((each.getGoods().getPriceCode() ==
-                     Goods.SPECIAL_OFFER) && each.getQuantity() > 1)
+                if ((each.getGoods().GetType() ==
+                     typeof(SpecialOrderGoods)) && each.getQuantity() > 1)
                     usedBonus = GetUsedBonus(thisAmount);
 
                 thisAmount -= usedBonus;

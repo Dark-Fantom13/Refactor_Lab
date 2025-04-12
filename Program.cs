@@ -52,19 +52,19 @@ namespace RLCLab01Example
 
                 string type = result[1].Trim();
                 int t = 0;
-                switch (type)
-                {
-                    case "REG":
-                        t = Goods.REGULAR;
-                        break;
-                    case "SAL":
-                        t = Goods.SALE;
-                        break;
-                    case "SPO":
-                        t = Goods.SPECIAL_OFFER;
-                        break;
-                }
-                g[i] = new Goods(result[0], t);
+                //switch (type)
+                //{
+                //    case "REG":
+                //        t = Goods.REGULAR;
+                //        break;
+                //    case "SAL":
+                //        t = Goods.SALE;
+                //        break;
+                //    case "SPO":
+                //        t = Goods.SPECIAL_OFFER;
+                //        break;
+                //}
+                //g[i] = new Goods(result[0], t);
             }
             // read items count 
             // Пропустить комментарии 
