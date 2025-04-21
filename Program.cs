@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using RLCExamples01;
+using static RLCExamples01.Bill;
 
 namespace RLCLab01Example
 {
@@ -31,7 +32,7 @@ namespace RLCLab01Example
 
             Customer customer = new Customer(name, bonus);
 
-            Bill b = new Bill(customer);
+            Bill b = new Bill(customer, new TxtView());
 
             // read goods count 
             line = sr.ReadLine();

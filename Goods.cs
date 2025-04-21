@@ -28,10 +28,10 @@ namespace RLCExamples01
         {
             return _title;
         }
-        private double GetSum(Item each)
-        {
-            return each.getQuantity() * each.getPrice();
-        }
+        //private double GetSum(Item each)
+        //{
+        //    return each.getQuantity() * each.getPrice();
+        //}
         public virtual int GetBonus(int quantity, double price)
         {
             return 0;
