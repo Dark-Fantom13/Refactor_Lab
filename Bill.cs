@@ -13,9 +13,9 @@ namespace RLCExamples01
         private IView view;
         public interface IView
         {
-            string GetHeader(Customer _customer);
-            string GetFooter(double totalAmount, double totalBonus);
-            string GetItemString(Item each, double discount, double thisAmount, int bonus);
+            string GetBill(Customer _customer);
+            string GetOutput(double totalAmount, double totalBonus);
+            string GenerateBill(Item each, double discount, double thisAmount, int bonus);
         }
         public Bill(Customer customer, IView view)
         {
@@ -29,7 +29,7 @@ namespace RLCExamples01
         }
         public class TxtView : IView
         {
-            public string GetHeader(Customer _customer)
+            public string GetBill(Customer _customer)
             {
                 String result = "Счет для " + _customer.getName() + "\n";
                 result += "\t" + "Название" + "\t" + "Цена" +
@@ -37,13 +37,13 @@ namespace RLCExamples01
                           "\t" + "Сумма" + "\t" + "Бонус" + "\n";
                 return result;
             }
-            public string GetFooter(double totalAmount, double totalBonus)
+            public string GetOutput(double totalAmount, double totalBonus)
             {
                 String result = "Сумма счета составляет " + totalAmount.ToString() + "\n";
                 result += "Вы заработали " + totalBonus.ToString() + " бонусных балов";
                 return result;
             }
-            public string GetItemString(Item each, double discount, double thisAmount, int bonus)
+            public string GenerateBill(Item each, double discount, double thisAmount, int bonus)
             {
                 String result = "\t" + each.getGoods().getTitle() + "\t" +
                 "\t" + each.getPrice() + "\t" + each.getQuantity() +
@@ -55,7 +55,7 @@ namespace RLCExamples01
         }
         public class HtmlView : IView
         {
-            public string GetHeader(Customer _customer)
+            public string GetBill(Customer _customer)
             {
                 String result = "Счет для " + _customer.getName() + "\n";
                 result += "\t" + "Название" + "\t" + "Цена" +
@@ -63,13 +63,13 @@ namespace RLCExamples01
                           "\t" + "Сумма" + "\t" + "Бонус" + "\n";
                 return result;
             }
-            public string GetFooter(double totalAmount, double totalBonus)
+            public string GetOutput(double totalAmount, double totalBonus)
             {
                 String result = "Сумма счета составляет " + totalAmount.ToString() + "\n";
                 result += "Вы заработали " + totalBonus.ToString() + " бонусных балов";
                 return result;
             }
-            public string GetItemString(Item each, double discount, double thisAmount, int bonus)
+            public string GenerateBill(Item each, double discount, double thisAmount, int bonus)
             {
                 String result = "\t" + each.getGoods().getTitle() + "\t" +
                 "\t" + each.getPrice() + "\t" + each.getQuantity() +
@@ -93,7 +93,7 @@ namespace RLCExamples01
             double totalAmount = 0;
             int totalBonus = 0;
             List<Item>.Enumerator items = _items.GetEnumerator();
-            String result = view.GetHeader(_customer);
+            String result = view.GetBill(_customer);
             while (items.MoveNext())
             {
                 double thisAmount = 0;
@@ -117,13 +117,13 @@ namespace RLCExamples01
 
                 thisAmount -= usedBonus;
                 //показать результаты 
-                result += view.GetItemString(each, discount, thisAmount, bonus);
+                result += view.GenerateBill(each, discount, thisAmount, bonus);
 
                 totalAmount += thisAmount;
                 totalBonus += bonus;
             }
             //добавить нижний колонтитул 
-            result += view.GetFooter(totalAmount,totalBonus);
+            result += view.GetOutput(totalAmount,totalBonus);
             //Запомнить бонус клиента 
             _customer.receiveBonus(totalBonus);
             return result;
