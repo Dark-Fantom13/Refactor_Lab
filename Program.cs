@@ -4,6 +4,7 @@ using System.Linq;
 using System.IO;
 using RLCExamples01;
 using static RLCExamples01.Bill;
+using static RLCExamples01.BillGenerator;
 
 namespace RLCLab01Example
 {
@@ -32,7 +33,8 @@ namespace RLCLab01Example
 
             Customer customer = new Customer(name, bonus);
 
-            Bill b = new Bill(customer, new TxtView());
+            BillGenerator b = new BillGenerator(new TxtView(), new Bill(customer));
+
 
             // read goods count 
             line = sr.ReadLine();
