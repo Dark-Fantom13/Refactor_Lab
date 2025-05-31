@@ -5,6 +5,7 @@ using System.IO;
 using RLCExamples01;
 using static RLCExamples01.Bill;
 using static RLCExamples01.BillGenerator;
+using static RLCExamples01.Goods;
 
 namespace RLCLab01Example
 {
@@ -17,72 +18,31 @@ namespace RLCLab01Example
                 filename = args[0];
 
             FileStream fs = new FileStream(filename, FileMode.Open);
-
             StreamReader sr = new StreamReader(fs);
 
-            // read customer 
+            // Читаем имя клиента
             string line = sr.ReadLine();
             string[] result = line.Split(':');
             string name = result[1].Trim();
 
-            // read bonus 
+            // Читаем бонусы
             line = sr.ReadLine();
             result = line.Split(':');
             int bonus = Convert.ToInt32(result[1].Trim());
 
-
             Customer customer = new Customer(name, bonus);
+            Bill bill = new Bill(customer); // Больше не передаём view
 
-            BillGenerator b = new BillGenerator(new TxtView(), new Bill(customer));
-
-
-            // read goods count 
+            // Читаем количество товаров
             line = sr.ReadLine();
-
             result = line.Split(':');
-
             int goodsQty = Convert.ToInt32(result[1].Trim());
 
             Goods[] g = new Goods[goodsQty];
+
             for (int i = 0; i < g.Length; i++)
             {
-                // Пропустить комментарии 
-                do
-                {
-                    line = sr.ReadLine();
-                } while (line.StartsWith("#")); result = line.Split(':');
-                result = result[1].Trim().Split();
-
-                string type = result[1].Trim();
-                int t = 0;
-                //switch (type)
-                //{
-                //    case "REG":
-                //        t = Goods.REGULAR;
-                //        break;
-                //    case "SAL":
-                //        t = Goods.SALE;
-                //        break;
-                //    case "SPO":
-                //        t = Goods.SPECIAL_OFFER;
-                //        break;
-                //}
-                //g[i] = new Goods(result[0], t);
-            }
-            // read items count 
-            // Пропустить комментарии 
-            do
-            {
-                line = sr.ReadLine();
-            } while (line.StartsWith("#"));
-
-            result = line.Split(':');
-
-            int itemsQty = Convert.ToInt32(result[1].Trim());
-
-            for (int i = 0; i < itemsQty; i++)
-            {
-                // Пропустить комментарии 
+                // Пропустить комментарии
                 do
                 {
                     line = sr.ReadLine();
@@ -90,13 +50,50 @@ namespace RLCLab01Example
 
                 result = line.Split(':');
                 result = result[1].Trim().Split();
+                string type = result[1].Trim();
+
+                if (type == "REG")
+                    g[i] = new RegularGoods(result[0]);
+                else if (type == "SAL")
+                    g[i] = new SaleGoods(result[0]);
+                else if (type == "SPO")
+                    g[i] = new SpecialOrderGoods(result[0]);
+                else
+                    throw new Exception("Неизвестный тип товара: " + type);
+            }
+
+            // Читаем количество позиций в чеке
+            do
+            {
+                line = sr.ReadLine();
+            } while (line.StartsWith("#"));
+
+            result = line.Split(':');
+            int itemsQty = Convert.ToInt32(result[1].Trim());
+
+            for (int i = 0; i < itemsQty; i++)
+            {
+                do
+                {
+                    line = sr.ReadLine();
+                } while (line.StartsWith("#"));
+
+                result = line.Split(':');
+                result = result[1].Trim().Split();
+
                 int gid = Convert.ToInt32(result[0].Trim());
                 double price = Convert.ToDouble(result[1].Trim());
                 int qty = Convert.ToInt32(result[2].Trim());
-                b.addGoods(new Item(g[gid - 1], qty, price));
+
+                bill.addGoods(new Item(g[gid - 1], qty, price));
             }
-            string bill = b.statement();
-            Console.WriteLine(bill);
+
+            // Используем BillGenerator и View
+            IView view = new TxtView(); // Можно заменить на HtmlView
+            BillGenerator generator = new BillGenerator( view, bill);
+            string output = generator.statement();
+
+            Console.WriteLine(output);
         }
     }
 }
