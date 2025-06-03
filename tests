@@ -1,0 +1,192 @@
+using System.Reflection.Emit;
+using NUnit.Framework;
+using RLCExamples01;
+using static RLCExamples01.BillGenerator;
+using static RLCExamples01.Goods;
+
+namespace РРУК_лаб_1_tests
+{
+    public class Tests
+    {
+        [SetUp]
+        public void Setup()
+        {
+        }
+        public void CreateBill_FromValidString_ReturnsCorrectBillSummary()
+        {
+            string input = @"Имя: Иван
+Бонусы: 10
+Товары: 2
+: Cola REG
+: Pepsi SAL
+Позиции: 2
+: 1 100 3
+: 2 50 2";
+
+            // Arrange
+            using var reader = new StringReader(input);
+            var content = new ContentFile();
+            content.SetSource(reader);
+
+            Bill bill = BillFactory.CreateBill(content);
+            BillSummary summary = bill.Process();
+
+            // Assert
+            Assert.AreEqual("Иван", summary.CustomerName);
+            Assert.AreEqual(2, summary.items.Count);
+
+            var item1 = summary.items[0];
+            var item2 = summary.items[1];
+
+            Assert.AreEqual("Cola", item1.Name);
+            Assert.AreEqual(3, item1.Quantity);
+            Assert.AreEqual(100, item1.Price);
+
+            Assert.AreEqual("Pepsi", item2.Name);
+            Assert.AreEqual(2, item2.Quantity);
+            Assert.AreEqual(50, item2.Price);
+        }
+        [Test]
+        public void TestRegularItemLessThan3()
+        {
+            Customer customer = new Customer("John", 10);
+            BillGenerator bill = new BillGenerator(new TxtView(), new Bill(customer));
+            RegularGoods goods = new RegularGoods("Book");// раньше было Goods goods = new Goods("Book", тип товара)
+            Item item = new Item(goods, 2, 100);
+            bill.addGoods(item);
+
+            string result = bill.statement();
+            Assert.IsTrue(result.Contains("Сумма счета составляет 200"));
+            Assert.IsTrue(result.Contains("Вы заработали 10 бонусных балов"));
+        }
+
+        [Test]
+        public void TestRegularItemMoreThan2()
+        {
+            Customer customer = new Customer("John", 15);
+            BillGenerator bill = new BillGenerator(new TxtView(), new Bill(customer));
+            RegularGoods goods = new RegularGoods("Book");
+            Item item = new Item(goods, 3, 100);
+            bill.addGoods(item);
+
+            string result = bill.statement();
+            Assert.IsTrue(result.Contains("Сумма счета составляет 291"));
+            Assert.IsTrue(result.Contains("Вы заработали 15 бонусных балов"));
+        }
+
+        [Test]
+        public void TestSpecialOfferItemLessThan10()
+        {
+            Customer customer = new Customer("John", 0);
+            BillGenerator bill = new BillGenerator(new TxtView(), new Bill(customer));
+            SpecialOrderGoods goods = new SpecialOrderGoods("TV");
+            Item item = new Item(goods, 5, 200);
+            bill.addGoods(item);
+
+            string result = bill.statement();
+            Assert.IsTrue(result.Contains("Сумма счета составляет 1000"));
+            Assert.IsTrue(result.Contains("Вы заработали 0 бонусных балов"));
+        }
+
+        [Test]
+        public void TestSpecialOfferItemMoreThan10()
+        {
+            Customer customer = new Customer("John", 0);
+            BillGenerator bill = new BillGenerator(new TxtView(), new Bill(customer));
+            SpecialOrderGoods goods = new SpecialOrderGoods("TV");
+            Item item = new Item(goods, 15, 200);
+            bill.addGoods(item);
+
+            string result = bill.statement();
+            Assert.IsTrue(result.Contains("Сумма счета составляет 2985"));//3000 было
+            Assert.IsTrue(result.Contains("Вы заработали 0 бонусных балов"));
+        }
+
+        [Test]
+        public void TestSaleItemLessThan3()
+        {
+            Customer customer = new Customer("John", 0);
+            BillGenerator bill = new BillGenerator(new TxtView(), new Bill(customer));
+            SaleGoods goods = new SaleGoods("Phone");
+            Item item = new Item(goods, 2, 300);
+            bill.addGoods(item);
+            string result = bill.statement();
+            Assert.IsTrue(result.Contains("Сумма счета составляет 600"));
+            Assert.IsTrue(result.Contains("Вы заработали 6 бонусных балов"));
+        }
+
+        [Test]
+        public void TestSaleItemMoreThan3()
+        {
+            Customer customer = new Customer("John", 0);
+            BillGenerator bill = new BillGenerator(new TxtView(), new Bill(customer));
+            SaleGoods goods = new SaleGoods("Phone");
+            Item item = new Item(goods, 5, 300);
+            bill.addGoods(item);
+
+            string result = bill.statement();
+            Assert.IsTrue(result.Contains("Сумма счета составляет 1485"));
+            Assert.IsTrue(result.Contains("Вы заработали 15 бонусных балов"));
+        }
+        [Test]
+        public void TestMixedItems()
+        {
+            Customer customer = new Customer("John", 0);
+            BillGenerator bill = new BillGenerator(new TxtView(), new Bill(customer));
+            RegularGoods goods1 = new RegularGoods("Book");
+            SpecialOrderGoods goods2 = new SpecialOrderGoods("TV");
+            SaleGoods goods3 = new SaleGoods("Phone");
+            Item item1 = new Item(goods1, 3, 100);
+            Item item2 = new Item(goods2, 15, 200);
+            Item item3 = new Item(goods3, 5, 300);
+            bill.addGoods(item1);
+            bill.addGoods(item2);
+            bill.addGoods(item3);
+
+            string result = bill.statement();
+            Assert.IsTrue(result.Contains("Сумма счета составляет 4761")); //4776 было, 4761 стало
+            Assert.IsTrue(result.Contains("Вы заработали 30 бонусных балов"));
+        }
+
+        [Test]
+        public void TestUseBonusForRegularItem()
+        {
+            Customer customer = new Customer("John", 0);
+            customer.receiveBonus(100);
+            BillGenerator bill = new BillGenerator(new TxtView(), new Bill(customer));
+            RegularGoods goods = new RegularGoods("Book");
+            Item item = new Item(goods, 6, 100);
+            bill.addGoods(item);
+
+            string result = bill.statement();
+            Assert.IsTrue(result.Contains("Сумма счета составляет 482"));
+            Assert.IsTrue(result.Contains("Вы заработали 30 бонусных балов"));
+        }
+
+        [Test]
+        public void TestUseBonusForSpecialOfferItem()
+        {
+            Customer customer = new Customer("John", 0);
+            customer.receiveBonus(100);
+            BillGenerator bill = new BillGenerator(new TxtView(), new Bill(customer));
+            SpecialOrderGoods goods = new SpecialOrderGoods("TV");
+            Item item = new Item(goods, 2, 200);
+            bill.addGoods(item);
+
+            string result = bill.statement();
+            Assert.IsTrue(result.Contains("Сумма счета составляет 300"));
+            Assert.IsTrue(result.Contains("Вы заработали 0 бонусных балов"));
+        }
+
+        [Test]
+        public void TestNoItems()
+        {
+            Customer customer = new Customer("John", 0);
+            BillGenerator bill = new BillGenerator(new TxtView(), new Bill(customer));
+
+            string result = bill.statement();
+            Assert.IsTrue(result.Contains("Сумма счета составляет 0"));
+            Assert.IsTrue(result.Contains("Вы заработали 0 бонусных балов"));
+        }
+    }
+}
