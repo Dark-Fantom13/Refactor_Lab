@@ -4,15 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace RLCExamples01
 {
-    public static class BillFactory
+    public static class FileSourceFactory
     {
         public static Bill CreateBill(IFileSource content)
         {
@@ -40,4 +34,3 @@ namespace RLCExamples01
         }
     }
 }
-
