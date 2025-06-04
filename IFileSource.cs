@@ -10,7 +10,7 @@ namespace RLCExamples01
     {
         public Customer GetCustomer();
         public int GetGoodsCount();
-        public (string title, string type) GetNextGood();
+        public (string title, string type, string bonusStrategySt, string discountStrategySt) GetNextGood();
         public int GetItemsCount();
         public (int gid, double price, int qty) GetNextItem();
     }

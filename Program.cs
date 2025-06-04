@@ -6,6 +6,7 @@ using RLCExamples01;
 using static RLCExamples01.Bill;
 using static RLCExamples01.BillGenerator;
 using static RLCExamples01.Goods;
+using static РРУК_лаб_1.Strateges;
 
 namespace RLCLab01Example
 {
@@ -53,11 +54,11 @@ namespace RLCLab01Example
                 string type = result[1].Trim();
 
                 if (type == "REG")
-                    g[i] = new RegularGoods(result[0]);
+                    g[i] = new RegularGoods(result[0], new FixedAmount(),new FixedPercentAllways());
                 else if (type == "SAL")
-                    g[i] = new SaleGoods(result[0]);
+                    g[i] = new SaleGoods(result[0],new FixedAmount(),new FixedPercentAllways());
                 else if (type == "SPO")
-                    g[i] = new SpecialOrderGoods(result[0]);
+                    g[i] = new SpecialOrderGoods(result[0],new FixedAmount(), new FixedPercentAllways());
                 else
                     throw new Exception("Неизвестный тип товара: " + type);
             }

@@ -40,12 +40,12 @@ namespace RLCExamples01
             return Convert.ToInt32(result[1].Trim());
         }
 
-        public (string title, string type) GetNextGood()
+        public (string title, string type, string bonusStrategySt, string discountStrategySt) GetNextGood()
         {
             string line = GetNextLine();
             string[] result = line.Split(" good");
             string[] parts = result[1].Trim().Split();
-            return (parts[0], parts[1]);
+            return (parts[0], parts[1], parts[2], parts[3]);
         }
 
         public int GetItemsCount()

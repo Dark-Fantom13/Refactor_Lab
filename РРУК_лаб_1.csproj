@@ -7,4 +7,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\source\repos\ClassLibrary2\ClassLibrary2\ClassLibrary2.csproj" />
+  </ItemGroup>
+
 </Project>

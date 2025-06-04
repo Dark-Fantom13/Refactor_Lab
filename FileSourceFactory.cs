@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static РРУК_лаб_1.Strateges;
 
 namespace RLCExamples01
 {
@@ -19,8 +20,8 @@ namespace RLCExamples01
 
             for (int i = 0; i < goodsCount; i++)
             {
-                var (title, type) = content.GetNextGood();
-                goods[i] = goodsFactory.Create(title, type);
+                var (title, type,  bonusStrategySt,  discountStrategySt) = content.GetNextGood();
+                goods[i] = goodsFactory.Create(title, type, bonusStrategySt, discountStrategySt);
             }
 
             int itemsCount = content.GetItemsCount();
